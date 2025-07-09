@@ -15,6 +15,5 @@ export async function readData(filePath, filterObj = null) {
         return arr;
     } catch (err) {
         console.error("Error reading file:", err.message);
-        return [];
     }
 }
