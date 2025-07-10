@@ -2,7 +2,7 @@ import { Router } from "express";
 import { readItemsFromFile,  createItemToFile, updateItemById} from "../DAL/fsDal.js";
 
 const router = Router();
-const filePath = "../lib/players.txt";
+const filePath = "./lib/players.txt";
 
 //====================================
 // GET /player - Returns all players

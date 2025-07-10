@@ -8,14 +8,11 @@ export async function createItemToFile(filePath, newItem) {
   try {
     const data = await readFile(filePath, "utf8");
     const arr = JSON.parse(data);
-
-    const newId = getNextIdFromArray(arr);
-    const newItemWithId = { id: newId, ...newItem };
-    arr.push(newItemWithId);
+    arr.push(newItem);
 
     await writeFile(filePath, JSON.stringify(arr, null, 2));
 
-    return newItemWithId;
+    return "seccess";
   } catch (err) {
     console.error("Error creating data:", err.message);
     return null;
