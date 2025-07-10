@@ -1,8 +1,5 @@
 import { Router } from "express";
-import { readData } from "../services/read.js";
-import { createData } from "../services/create.js";
-import { updateData } from "../services/update.js";
-import { deleteData } from "../services/delete.js";
+import { readItemsFromFile,  createItemToFile, updateItemById, deleteItemById} from "../DAL/fsDal.js";
 
 const router = Router();
 const filePath = "./lib/riddles.txt";
@@ -12,7 +9,7 @@ const filePath = "./lib/riddles.txt";
 //====================================
 router.get("/", async (req, res) => {
   try {
-    const riddles = await readData(filePath);
+    const riddles = await readItemsFromFile(filePath);
     res.json(riddles);
   } catch (err) {
     res.status(500).json({ error: "Failed to read data" });
@@ -25,7 +22,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const newRiddle = req.body;
   try {
-    const saved = await createData(filePath, newRiddle);
+    const saved = await createItemToFile(filePath, newRiddle);
     res.status(201).json(saved);
   } catch (err) {
     res.status(500).json({ error: "Failed to save data" });
@@ -39,7 +36,7 @@ router.put("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const newData = req.body;
   try {
-    const updatedList = await updateData(filePath, id, newData);
+    const updatedList = await updateItemById(filePath, id, newData);
     res.json(updatedList);
   } catch (err) {
     res.status(500).json({ error: "Failed to update data" });
@@ -52,7 +49,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
   try {
-    const updatedList = await deleteData(filePath, id);
+    const updatedList = await deleteItemById(filePath, id);
     res.json(updatedList);
   } catch (err) {
     res.status(500).json({ error: "Failed to delete data" });
