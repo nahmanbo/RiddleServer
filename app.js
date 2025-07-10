@@ -6,10 +6,6 @@ const PORT = 1234;
 const server = express();
 
 //-------------Middleware---------------
-function logger(req, res, next) {
-  console.log(`Got request: method = ${req.method}, url = ${req.url}`);
-  next();
-}
 
 server.use(express.json());  
 server.use(logger);         
