@@ -3,7 +3,8 @@ import {
   getAllRiddles,
   addRiddle,
   updateRiddle,
-  deleteRiddle
+  deleteRiddle, 
+  getRiddlesByLevel
 } from "../controllers/riddleController.js";
 
 const router = Router();
@@ -12,6 +13,11 @@ const router = Router();
 // GET /riddles - Returns all riddles
 //====================================
 router.get("/", getAllRiddles);
+
+//====================================
+// GET /riddles/level/:level - Filter riddles by difficulty level
+//====================================
+router.get("/level/:level", getRiddlesByLevel);
 
 //====================================
 // POST /riddles - Creates a new riddle

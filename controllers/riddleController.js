@@ -17,6 +17,19 @@ export async function getAllRiddles(req, res) {
   }
 }
 
+///====================================
+// GET /riddles/difficulty/:difficulty - Get riddles by difficulty
+//====================================
+export async function getRiddlesByDifficulty(req, res) {
+  const difficulty = req.params.difficulty;
+  try {
+    const filtered = await readItemsFromFile(filePath, { difficulty });
+    res.json(filtered);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read data" });
+  }
+}
+
 //====================================
 // POST /riddles - Controller handler
 //====================================
