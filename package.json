@@ -1,19 +1,19 @@
 {
   "name": "riddleserver",
   "version": "1.0.0",
-  "description": "",
+  "description": "Express server for managing riddles and players using file-based storage.",
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
+  "keywords": ["express", "riddles", "nodejs", "server", "players"],
+  "author": "Nahman Ben Or",
+  "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nahmanbo/RiddleServer.git"
+    "url": "https://github.com/nahmanbo/RiddleServer.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/nahmanbo/RiddleServer/issues"
   },
