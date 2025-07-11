@@ -68,15 +68,16 @@ flowchart TD
 
 ## 🔹 API Overview
 
-| Method | Endpoint           | Description              |
-|--------|--------------------|--------------------------|
-| GET    | /players           | Get all players          |
-| POST   | /players           | Add a new player         |
-| PUT    | /players/:id       | Update player by ID      |
-| GET    | /riddles           | Get all riddles          |
-| POST   | /riddles           | Add a new riddle         |
-| PUT    | /riddles/:id       | Update riddle by ID      |
-| DELETE | /riddles/:id       | Delete riddle by ID      |
+| Method | Endpoint                       | Description                     |
+|--------|--------------------------------|---------------------------------|
+| GET    | /players                       | Get all players                 |
+| POST   | /players                       | Add a new player                |
+| PUT    | /players/:id                   | Update player by ID             |
+| GET    | /riddles                       | Get all riddles                 |
+| GET    | /riddles/difficulty/:difficulty| Get riddles by difficulty level |
+| POST   | /riddles                       | Add a new riddle                |
+| PUT    | /riddles/:id                   | Update riddle by ID             |
+| DELETE | /riddles/:id                   | Delete riddle by ID             |
 
 ---
 
@@ -89,7 +90,7 @@ flowchart TD
 
 2. Start the server:
    ```bash
-   node app.js
+   npm start
    ```
 
 3. Server runs at:
@@ -104,6 +105,48 @@ flowchart TD
 Every HTTP request is automatically logged to the console via `loggerHelper.js`, showing method and URL:
 ```
 Incoming request: method = GET, url = /riddles
+```
+
+---
+
+## 🧪 API Testing with `curl`
+
+```bash
+# 📥 Get all players
+curl http://localhost:1234/players
+
+# ➕ Add a new player
+curl -X POST http://localhost:1234/players \
+  -H "Content-Type: application/json" \
+  -d '{"id": 1, "name": "Alice"}'
+
+# ✏️ Update a player by ID
+curl -X PUT http://localhost:1234/players/1 \
+  -H "Content-Type: application/json" \
+  -d '{"id": 1, "name": "Alice Updated"}'
+```
+
+```bash
+# 📥 Get all riddles
+curl http://localhost:1234/riddles
+
+# 🎯 Get riddles by difficulty
+curl http://localhost:1234/riddles/difficulty/Easy
+curl http://localhost:1234/riddles/difficulty/Medium
+curl http://localhost:1234/riddles/difficulty/Hard
+
+# ➕ Add a new riddle
+curl -X POST http://localhost:1234/riddles \
+  -H "Content-Type: application/json" \
+  -d '{"id": 101, "subject": "Logic", "difficulty": "Easy", "taskDescription": "What has keys but can\'t open locks?", "correctAnswer": "Piano"}'
+
+# ✏️ Update a riddle by ID
+curl -X PUT http://localhost:1234/riddles/101 \
+  -H "Content-Type: application/json" \
+  -d '{"id": 101, "subject": "Logic", "difficulty": "Medium", "taskDescription": "Updated task", "correctAnswer": "Keyboard"}'
+
+# ❌ Delete a riddle by ID
+curl -X DELETE http://localhost:1234/riddles/101
 ```
 
 ---
