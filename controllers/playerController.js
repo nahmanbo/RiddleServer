@@ -1,6 +1,6 @@
-import { readItemsFromFile } from "../ dal_t/readItems.js";
-import { createItemToFile } from "../ dal_t/createItem.js";
-import { updateItemById } from "../ dal_t/updateItem.js";
+import { readItemsFromFile } from "../ dal/readItems.js";
+import { createItemToFile } from "../ dal/createItem.js";
+import { updateItemById } from "../ dal/updateItem.js";
 
 
 const filePath = "./lib/players.txt";

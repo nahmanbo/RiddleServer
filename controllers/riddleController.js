@@ -1,7 +1,7 @@
-import { readItemsFromFile } from "../ dal_t/readItems.js";
-import { createItemToFile } from "../ dal_t/createItem.js";
-import { updateItemById } from "../ dal_t/updateItem.js";
-import { deleteItemById } from "../ dal_t/deleteItem.js";
+import { readItemsFromFile } from "../ dal/readItems.js";
+import { createItemToFile } from "../ dal/createItem.js";
+import { updateItemById } from "../ dal/updateItem.js";
+import { deleteItemById } from "../ dal/deleteItem.js";
 
 const filePath = "./lib/riddles.txt";
 
