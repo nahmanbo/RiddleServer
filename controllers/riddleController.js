@@ -3,7 +3,7 @@ import {
   createRiddle,
   updateRiddle,
   deleteRiddle
-} from "../dal/mongoRiddleDal.js";
+} from "../ dal/mongoRiddleDal.js";
 
 //====================================
 // GET /riddles - Controller handler

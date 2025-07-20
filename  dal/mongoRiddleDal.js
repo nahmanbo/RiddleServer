@@ -38,9 +38,6 @@ export async function updateRiddle(id, newData) {
       { $set: newData },
       { returnDocument: "after" }
     );
-    if (!result.value) {
-      throw new Error("Riddle not found");
-    }
     return result.value;
   } catch (err) {
     console.error("❌ Failed to update riddle:", err.message);

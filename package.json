@@ -5,9 +5,15 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node --env-file=.env --watch app.js"
   },
-  "keywords": ["express", "riddles", "nodejs", "server", "players"],
+  "keywords": [
+    "express",
+    "riddles",
+    "nodejs",
+    "server",
+    "players"
+  ],
   "author": "Nahman Ben Or",
   "license": "ISC",
   "repository": {
@@ -19,6 +25,7 @@
   },
   "homepage": "https://github.com/nahmanbo/RiddleServer#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongodb": "^6.17.0"
   }
 }
