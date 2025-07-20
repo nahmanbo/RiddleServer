@@ -38,6 +38,7 @@ export async function updateRiddle(id, newData) {
       { $set: newData },
       { returnDocument: "after" }
     );
+    
     return result.value;
   } catch (err) {
     console.error("❌ Failed to update riddle:", err.message);

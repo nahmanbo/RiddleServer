@@ -1,25 +1,25 @@
 import { Router } from "express";
 import {
-  getAllPlayers,
-  addPlayer,
-  updatePlayer
+  getAllPlayersController,
+  createPlayerController,
+  updatePlayerController
 } from "../controllers/playerController.js";
 
 const router = Router();
 
 //====================================
-// GET /players - Returns all players
+// GET /players
 //====================================
-router.get("/", getAllPlayers);
+router.get("/", getAllPlayersController);
 
 //====================================
-// POST /players - Creates a new player
+// POST /players
 //====================================
-router.post("/", addPlayer);
+router.post("/", createPlayerController);
 
 //====================================
-// PUT /players/:id - Updates a player by ID
+// PUT /players/:id
 //====================================
-router.put("/:id", updatePlayer);
+router.put("/:id", updatePlayerController);
 
 export default router;
