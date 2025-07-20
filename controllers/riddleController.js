@@ -1,76 +1,72 @@
-import { readItemsFromFile } from "../ dal/readItems.js";
-import { createItemToFile } from "../ dal/createItem.js";
-import { updateItemById } from "../ dal/updateItem.js";
-import { deleteItemById } from "../ dal/deleteItem.js";
-
-const filePath = "./lib/riddles.txt";
+import {
+  getAllRiddles,
+  createRiddle,
+  updateRiddle,
+  deleteRiddle
+} from "../dal/mongoRiddleDal.js";
 
 //====================================
 // GET /riddles - Controller handler
 //====================================
-export async function getAllRiddles(req, res) {
+export async function getAllRiddlesController(req, res) {
   try {
-    const riddles = await readItemsFromFile(filePath);
+    const riddles = await getAllRiddles();
     res.json(riddles);
   } catch (err) {
-    res.status(500).json({ error: "Failed to read data" });
+    res.status(500).json({ error: "Failed to fetch riddles" });
   }
 }
 
-///====================================
-// GET /riddles/difficulty/:difficulty - Get riddles by difficulty
+//====================================
+// GET /riddles/difficulty/:difficulty - Filter by difficulty
 //====================================
 export async function getRiddlesByDifficulty(req, res) {
   const difficulty = req.params.difficulty;
   try {
-    const filtered = await readItemsFromFile(filePath, { difficulty });
+    const allRiddles = await getAllRiddles();
+    const filtered = allRiddles.filter(r => r.level === difficulty);
     res.json(filtered);
   } catch (err) {
-    res.status(500).json({ error: "Failed to read data" });
+    res.status(500).json({ error: "Failed to filter riddles" });
   }
 }
 
 //====================================
-// POST /riddles - Controller handler
+// POST /riddles - Add new riddle
 //====================================
-export async function addRiddle(req, res) {
+export async function addRiddleController(req, res) {
   const newRiddle = req.body;
   try {
-    const result = await createItemToFile(filePath, newRiddle);
-    if (!result.success) throw new Error(result.error);
-    res.status(201).json(result.data);
+    const result = await createRiddle(newRiddle);
+    res.status(201).json(result);
   } catch (err) {
-    res.status(500).json({ error: "Failed to save data" });
+    res.status(500).json({ error: "Failed to save riddle" });
   }
 }
 
 //====================================
-// PUT /riddles/:id - Controller handler
+// PUT /riddles/:id - Update by ID
 //====================================
-export async function updateRiddle(req, res) {
+export async function updateRiddleController(req, res) {
   const id = Number(req.params.id);
   const newData = req.body;
-
   try {
-    const result = await updateItemById(filePath, id, newData);
-    if (!result.success) throw new Error(result.error);
-    res.json(result.updated);
+    const result = await updateRiddle(id, newData);
+    res.json(result);
   } catch (err) {
-    res.status(500).json({ error: "Failed to update data" });
+    res.status(500).json({ error: "Failed to update riddle" });
   }
 }
 
 //====================================
-// DELETE /riddles/:id - Controller handler
+// DELETE /riddles/:id - Delete by ID
 //====================================
-export async function deleteRiddle(req, res) {
+export async function deleteRiddleController(req, res) {
   const id = Number(req.params.id);
-
   try {
-    const result = await deleteItemById(filePath, id);
-    if (!result.success) throw new Error(result.error);
-    res.json(result.updatedList);
+    const result = await deleteRiddle(id);
+    res.json(result);
   } catch (err) {
-    res.status(500).json({ error: "Failed to delete data" });
+    res.status(500).json({ error: "Failed to delete riddle" });
   }
 }
