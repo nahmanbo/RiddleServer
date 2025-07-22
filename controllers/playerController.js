@@ -1,43 +1,47 @@
 import {
-    getAllPlayers,
-    createPlayer,
-    updatePlayer
-  } from "../ dal/supabasePlayerDal.js";
-  
-  //====================================
-  // GET /players - Controller
-  //====================================
-  export async function getAllPlayersController(req, res) {
-    try {
-      const players = await getAllPlayers();
-      res.json(players);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
+  getPlayerNames,
+  getPlayersSortedByTotal,
+  insertSolvedRiddle
+} from "../dal/supabasePlayerDal.js";
+
+//====================================
+// GET /players - Just player names
+//====================================
+export async function getPlayerNamesController(req, res) {
+  try {
+    const players = await getPlayerNames();
+    res.json(players);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  
-  //====================================
-  // POST /players - Controller
-  //====================================
-  export async function createPlayerController(req, res) {
-    try {
-      const player = await createPlayer(req.body);
-      res.status(201).json(player);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
+}
+
+//====================================
+// GET /players/sorted-by-total
+//====================================
+export async function getPlayersSortedByTotalController(req, res) {
+  try {
+    const players = await getPlayersSortedByTotal();
+    res.json(players);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  
-  //====================================
-  // PUT /players/:id - Controller
-  //====================================
-  export async function updatePlayerController(req, res) {
-    const id = Number(req.params.id);
-    try {
-      const updated = await updatePlayer(id, req.body);
-      res.json(updated);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
+}
+
+//====================================
+// POST /players/solve
+//====================================
+export async function solveRiddleController(req, res) {
+  const { player_id, riddle_id, difficulty, solved_time } = req.body;
+
+  if (!player_id || !riddle_id || !difficulty || !solved_time) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
-  
+
+  try {
+    const result = await insertSolvedRiddle({ player_id, riddle_id, difficulty, solved_time });
+    res.status(201).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
