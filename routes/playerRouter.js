@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   getPlayerNamesController,
   getPlayersSortedByTotalController,
-  solveRiddleController
+  solveRiddleController,
+  createPlayerController
 } from "../controllers/playerController.js";
 
 const router = Router();
@@ -21,5 +22,10 @@ router.get("/sorted-by-total", getPlayersSortedByTotalController);
 // POST /players/solve
 //====================================
 router.post("/solve", solveRiddleController);
+
+//====================================
+// POST /players - Create new player
+//====================================
+router.post("/", createPlayerController);
 
 export default router;

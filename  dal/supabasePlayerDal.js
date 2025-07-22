@@ -46,3 +46,15 @@ export async function insertSolvedRiddle({ player_id, riddle_id, difficulty, sol
   }
   return data[0];
 }
+
+//====================================
+// CREATE a new player
+//====================================
+export async function createPlayer(player) {
+  const { data, error } = await supabase.from("players").insert([player]).select();
+  if (error) {
+    console.error("Supabase error (createPlayer):", error.message);
+    throw new Error("Failed to create player");
+  }
+  return data[0];
+}

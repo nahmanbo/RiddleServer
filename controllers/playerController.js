@@ -1,7 +1,8 @@
 import {
   getPlayerNames,
   getPlayersSortedByTotal,
-  insertSolvedRiddle
+  insertSolvedRiddle,
+  createPlayer
 } from "../dal/supabasePlayerDal.js";
 
 //====================================
@@ -41,6 +42,18 @@ export async function solveRiddleController(req, res) {
   try {
     const result = await insertSolvedRiddle({ player_id, riddle_id, difficulty, solved_time });
     res.status(201).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+//====================================
+// POST /players - Create new player
+//====================================
+export async function createPlayerController(req, res) {
+  try {
+    const player = await createPlayer(req.body);
+    res.status(201).json(player);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
