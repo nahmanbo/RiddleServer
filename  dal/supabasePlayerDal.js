@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabaseClient.js";
 export async function getAllPlayers() {
   const { data, error } = await supabase.from("players").select("*");
   if (error) {
-    console.error("❌ Supabase error (getAllPlayers):", error.message);
+    console.error("Supabase error (getAllPlayers):", error.message);
     throw new Error("Failed to fetch players");
   }
   return data;
@@ -18,7 +18,7 @@ export async function getAllPlayers() {
 export async function createPlayer(player) {
   const { data, error } = await supabase.from("players").insert([player]).select();
   if (error) {
-    console.error("❌ Supabase error (createPlayer):", error.message);
+    console.error("Supabase error (createPlayer):", error.message);
     throw new Error("Failed to create player");
   }
   return data[0];
@@ -33,7 +33,7 @@ export async function updatePlayer(id, newData) {
     .eq("id", id)
     .select();
   if (error) {
-    console.error("❌ Supabase error (updatePlayer):", error.message);
+    console.error("Supabase error (updatePlayer):", error.message);
     throw new Error("Failed to update player");
   }
   return data[0];

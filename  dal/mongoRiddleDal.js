@@ -10,7 +10,7 @@ export async function getAllRiddles() {
   try {
     return await riddlesCollection.find().toArray();
   } catch (err) {
-    console.error("❌ Failed to get riddles:", err.message);
+    console.error("Failed to get riddles:", err.message);
     throw new Error("Could not fetch riddles");
   }
 }
@@ -23,7 +23,7 @@ export async function createRiddle(riddle) {
     await riddlesCollection.insertOne(riddle);
     return riddle;
   } catch (err) {
-    console.error("❌ Failed to create riddle:", err.message);
+    console.error("Failed to create riddle:", err.message);
     throw new Error("Could not create riddle");
   }
 }
@@ -38,10 +38,10 @@ export async function updateRiddle(id, newData) {
       { $set: newData },
       { returnDocument: "after" }
     );
-    
+
     return result.value;
   } catch (err) {
-    console.error("❌ Failed to update riddle:", err.message);
+    console.error("Failed to update riddle:", err.message);
     throw new Error("Could not update riddle");
   }
 }
@@ -57,7 +57,7 @@ export async function deleteRiddle(id) {
     }
     return { deletedCount: result.deletedCount };
   } catch (err) {
-    console.error("❌ Failed to delete riddle:", err.message);
+    console.error("Failed to delete riddle:", err.message);
     throw new Error("Could not delete riddle");
   }
 }

@@ -2,7 +2,7 @@ import {
     getAllPlayers,
     createPlayer,
     updatePlayer
-  } from "../dal/supabasePlayerDal.js";
+  } from "../ dal/supabasePlayerDal.js";
   
   //====================================
   // GET /players - Controller
