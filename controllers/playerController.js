@@ -3,7 +3,7 @@ import {
   getPlayersSortedByTotal,
   insertSolvedRiddle,
   createPlayer
-} from "../dal/supabasePlayerDal.js";
+} from "../ dal/supabasePlayerDal.js"; 
 
 //====================================
 // GET /players - Just player names
