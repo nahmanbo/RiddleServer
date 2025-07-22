@@ -3,18 +3,24 @@ import riddleRouter from "./routes/riddleRouter.js";
 import playerRouter from "./routes/playerRouter.js";
 import { logger } from "./utils/loggerHelper.js";
 
-const PORT = 1234;
-const server = express();
+const PORT = 1212;
+const app = express();
 
-//-------------Middleware---------------
-server.use(express.json());  
-server.use(logger);         
+// ================================
+// Middleware
+// ================================
+app.use(express.json());
+app.use(logger);
 
-//-------------Routes---------------
-server.use("/riddles", riddleRouter);
-server.use("/players", playerRouter);
+// ================================
+// Routes
+// ================================
+app.use("/riddles", riddleRouter);
+app.use("/players", playerRouter);
 
-//-------------Start server---------------
-server.listen(PORT, () => {
+// ================================
+// Start Server
+// ================================
+app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

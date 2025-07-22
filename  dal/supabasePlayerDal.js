@@ -1,15 +1,50 @@
 import { supabase } from "../lib/supabaseClient.js";
 
 //====================================
-// GET all players
+// GET just player names (id + name)
 //====================================
-export async function getAllPlayers() {
-  const { data, error } = await supabase.from("players").select("*");
+export async function getPlayerNames() {
+  const { data, error } = await supabase
+    .from("players")
+    .select("id, name");
+
   if (error) {
-    console.error("Supabase error (getAllPlayers):", error.message);
-    throw new Error("Failed to fetch players");
+    console.error("Supabase error (getPlayerNames):", error.message);
+    throw new Error("Failed to fetch player names");
   }
   return data;
+}
+
+//====================================
+// GET all players sorted by total_solved DESC
+//====================================
+export async function getPlayersSortedByTotal() {
+  const { data, error } = await supabase
+    .from("players")
+    .select("*")
+    .order("total_solved", { ascending: false });
+
+  if (error) {
+    console.error("Supabase error (getPlayersSortedByTotal):", error.message);
+    throw new Error("Failed to fetch sorted players");
+  }
+  return data;
+}
+
+//====================================
+// INSERT new solved riddle
+//====================================
+export async function insertSolvedRiddle({ player_id, riddle_id, difficulty, solved_time }) {
+  const { data, error } = await supabase
+    .from("solved_riddles")
+    .insert([{ player_id, riddle_id, difficulty, solved_time }])
+    .select();
+
+  if (error) {
+    console.error("Supabase error (insertSolvedRiddle):", error.message);
+    throw new Error("Failed to insert solved riddle");
+  }
+  return data[0];
 }
 
 //====================================
@@ -20,21 +55,6 @@ export async function createPlayer(player) {
   if (error) {
     console.error("Supabase error (createPlayer):", error.message);
     throw new Error("Failed to create player");
-  }
-  return data[0];
-}
-
-//====================================
-// UPDATE player by id
-//====================================
-export async function updatePlayer(id, newData) {
-  const { data, error } = await supabase.from("players")
-    .update(newData)
-    .eq("id", id)
-    .select();
-  if (error) {
-    console.error("Supabase error (updatePlayer):", error.message);
-    throw new Error("Failed to update player");
   }
   return data[0];
 }

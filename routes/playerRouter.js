@@ -1,25 +1,31 @@
 import { Router } from "express";
 import {
-  getAllPlayersController,
-  createPlayerController,
-  updatePlayerController
+  getPlayerNamesController,
+  getPlayersSortedByTotalController,
+  solveRiddleController,
+  createPlayerController
 } from "../controllers/playerController.js";
 
 const router = Router();
 
 //====================================
-// GET /players
+// GET /players - Just player names
 //====================================
-router.get("/", getAllPlayersController);
+router.get("/", getPlayerNamesController);
 
 //====================================
-// POST /players
+// GET /players/sorted-by-total
+//====================================
+router.get("/sorted-by-total", getPlayersSortedByTotalController);
+
+//====================================
+// POST /players/solve
+//====================================
+router.post("/solve", solveRiddleController);
+
+//====================================
+// POST /players - Create new player
 //====================================
 router.post("/", createPlayerController);
-
-//====================================
-// PUT /players/:id
-//====================================
-router.put("/:id", updatePlayerController);
 
 export default router;
