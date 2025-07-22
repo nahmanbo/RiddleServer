@@ -1,49 +1,43 @@
-import { readItemsFromFile } from "../ dal/readItems.js";
-import { createItemToFile } from "../ dal/createItem.js";
-import { updateItemById } from "../ dal/updateItem.js";
-
-
-const filePath = "./lib/players.txt";
-
-//====================================
-// GET /players - Controller handler
-//====================================
-export async function getAllPlayers(req, res) {
-  try {
-    const players = await readItemsFromFile(filePath);
-    res.json(players);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to read data" });
+import {
+    getAllPlayers,
+    createPlayer,
+    updatePlayer
+  } from "../ dal/supabasePlayerDal.js";
+  
+  //====================================
+  // GET /players - Controller
+  //====================================
+  export async function getAllPlayersController(req, res) {
+    try {
+      const players = await getAllPlayers();
+      res.json(players);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-}
-
-//====================================
-// POST /players - Controller handler
-//====================================
-export async function addPlayer(req, res) {
-  const newPlayer = req.body;
-  try {
-    const result = await createItemToFile(filePath, newPlayer);
-    if (!result.success) throw new Error(result.error);
-    res.status(201).json(result.data);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to save data" });
+  
+  //====================================
+  // POST /players - Controller
+  //====================================
+  export async function createPlayerController(req, res) {
+    try {
+      const player = await createPlayer(req.body);
+      res.status(201).json(player);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-}
-
-//====================================
-// PUT /players/:id - Controller handler
-//====================================
-export async function updatePlayer(req, res) {
-  const id = Number(req.params.id);
-  const newData = req.body;
-
-  try {
-    const result = await updateItemById(filePath, id, newData);
-    if (!result.success) throw new Error(result.error);
-    res.json(result.updated);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update data" });
+  
+  //====================================
+  // PUT /players/:id - Controller
+  //====================================
+  export async function updatePlayerController(req, res) {
+    const id = Number(req.params.id);
+    try {
+      const updated = await updatePlayer(id, req.body);
+      res.json(updated);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-}
-
+  

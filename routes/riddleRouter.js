@@ -1,37 +1,37 @@
 import { Router } from "express";
 import {
-  getAllRiddles,
-  addRiddle,
-  updateRiddle,
-  deleteRiddle, 
-  getRiddlesByDifficulty
+  getAllRiddlesController,
+  getRiddlesByDifficulty,
+  addRiddleController,
+  updateRiddleController,
+  deleteRiddleController
 } from "../controllers/riddleController.js";
 
 const router = Router();
 
 //====================================
-// GET /riddles - Returns all riddles
+// GET /riddles - All riddles
 //====================================
-router.get("/", getAllRiddles);
+router.get("/", getAllRiddlesController);
 
 //====================================
-// GET /riddles/level/:level - Filter riddles by difficulty level
+// GET /riddles/difficulty/:difficulty
 //====================================
 router.get("/difficulty/:difficulty", getRiddlesByDifficulty);
 
 //====================================
-// POST /riddles - Creates a new riddle
+// POST /riddles - Add new riddle
 //====================================
-router.post("/", addRiddle);
+router.post("/", addRiddleController);
 
 //====================================
-// PUT /riddles/:id - Updates a riddle by ID
+// PUT /riddles/:id - Update existing riddle
 //====================================
-router.put("/:id", updateRiddle);
+router.put("/:id", updateRiddleController);
 
 //====================================
-// DELETE /riddles/:id - Deletes a riddle by ID
+// DELETE /riddles/:id - Delete riddle
 //====================================
-router.delete("/:id", deleteRiddle);
+router.delete("/:id", deleteRiddleController);
 
 export default router;
