@@ -2,7 +2,8 @@ import {
   getPlayerNames,
   getPlayersSortedByTotal,
   insertSolvedRiddle,
-  createPlayer
+  createPlayer,
+  loginPlayer
 } from "../ dal/supabasePlayerDal.js";
 
 //====================================
@@ -59,6 +60,26 @@ export async function createPlayerController(req, res) {
       res.status(409).json({ message: err.message });
     } else {
       res.status(500).json({ error: err.message });
+    }
+  }
+}
+
+// POST /players/login - Authenticate player
+export async function loginPlayerController(req, res) {
+  const { name, password } = req.body;
+
+  if (!name || !password) {
+    return res.status(400).json({ error: "Missing name or password" });
+  }
+
+  try {
+    const player = await loginPlayer({ name, password });
+    res.status(200).json({ player });
+  } catch (err) {
+    if (err.message === "Player not found" || err.message === "Incorrect password") {
+      res.status(401).json({ error: "Invalid name or password" });
+    } else {
+      res.status(500).json({ error: "Login failed" });
     }
   }
 }

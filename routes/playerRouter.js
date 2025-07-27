@@ -3,7 +3,8 @@ import {
   getPlayerNamesController,
   getPlayersSortedByTotalController,
   solveRiddleController,
-  createPlayerController
+  createPlayerController,
+  loginPlayerController
 } from "../controllers/playerController.js";
 
 const router = Router();
@@ -27,5 +28,8 @@ router.post("/solve", solveRiddleController);
 // POST /players - Create new player
 //====================================
 router.post("/", createPlayerController);
+
+router.post("/login", loginPlayerController);
+
 
 export default router;

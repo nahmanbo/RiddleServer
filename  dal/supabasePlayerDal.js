@@ -87,3 +87,24 @@ export async function createPlayer({ name, password }) {
     role: data.role
   };
 }
+
+// Login existing player by verifying password
+export async function loginPlayer({ name, password }) {
+  const player = await findPlayerByName(name);
+
+  if (!player) {
+    throw new Error("Player not found");
+  }
+
+  const match = await bcrypt.compare(password, player.passwordhash);
+  if (!match) {
+    throw new Error("Incorrect password");
+  }
+
+  return {
+    id: player.id,
+    name: player.name,
+    role: player.role
+  };
+}
+
