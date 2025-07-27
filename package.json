@@ -26,6 +26,7 @@
   "homepage": "https://github.com/nahmanbo/RiddleServer#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.52.0",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "mongodb": "^6.17.0"
   }

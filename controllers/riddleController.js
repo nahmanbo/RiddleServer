@@ -24,7 +24,9 @@ export async function getRiddlesByDifficulty(req, res) {
   const difficulty = req.params.difficulty;
   try {
     const allRiddles = await getAllRiddles();
-    const filtered = allRiddles.filter(r => r.level === difficulty);
+    const filtered = allRiddles.filter(r =>
+      r.difficulty.toLowerCase() === difficulty.toLowerCase()
+    );
     res.json(filtered);
   } catch (err) {
     res.status(500).json({ error: "Failed to filter riddles" });
