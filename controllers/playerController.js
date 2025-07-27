@@ -3,7 +3,7 @@ import {
   getPlayersSortedByTotal,
   insertSolvedRiddle,
   createPlayer
-} from "../dal/supabasePlayerDal.js";
+} from "../ dal/supabasePlayerDal.js";
 
 //====================================
 // GET /players - List all player names and roles
@@ -42,13 +42,17 @@ export async function solveRiddleController(req, res) {
 }
 
 //====================================
-// POST /players - Create new player (with role)
+// POST /players - Create new player 
 //====================================
 export async function createPlayerController(req, res) {
-  const { name, role } = req.body;
+  const { name, password } = req.body;
+
+  if (!name || !password) {
+    return res.status(400).json({ error: "Missing name or password" });
+  }
 
   try {
-    const newPlayer = await createPlayer({ name, role });
+    const newPlayer = await createPlayer({ name, password });
     res.status(201).json(newPlayer);
   } catch (err) {
     if (err.message === "Player already exists") {
