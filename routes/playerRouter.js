@@ -6,6 +6,8 @@ import {
   createPlayerController,
   loginPlayerController
 } from "../controllers/playerController.js";
+import { authenticateJWT } from "../middlewares/authenticateJWT.js";
+
 
 const router = Router();
 
@@ -17,7 +19,7 @@ router.get("/", getPlayerNamesController);
 //====================================
 // GET /players/sorted-by-total
 //====================================
-router.get("/sorted-by-total", getPlayersSortedByTotalController);
+router.get("/sorted-by-total", authenticateJWT, getPlayersSortedByTotalController);
 
 //====================================
 // POST /players/solve

@@ -5,6 +5,8 @@ import {
   createPlayer,
   loginPlayer
 } from "../ dal/supabasePlayerDal.js";
+import jwt from "jsonwebtoken";
+
 
 //====================================
 // GET /players - List all player names and roles
@@ -63,18 +65,24 @@ export async function createPlayerController(req, res) {
     }
   }
 }
-
-// POST /players/login - Authenticate player
+// POST /players/login - Authenticate player and return JWT
 export async function loginPlayerController(req, res) {
   const { name, password } = req.body;
 
-  if (!name || !password) {
-    return res.status(400).json({ error: "Missing name or password" });
-  }
-
   try {
     const player = await loginPlayer({ name, password });
-    res.status(200).json({ player });
+
+    const token = jwt.sign(
+      {
+        id: player.id,
+        name: player.name,
+        role: player.role
+      },
+      process.env.JWT_SECRET || "dev-secret",
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({ token, player });
   } catch (err) {
     if (err.message === "Player not found" || err.message === "Incorrect password") {
       res.status(401).json({ error: "Invalid name or password" });
@@ -83,3 +91,4 @@ export async function loginPlayerController(req, res) {
     }
   }
 }
+
