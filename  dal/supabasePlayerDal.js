@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabaseClient.js";
 import bcrypt from "bcrypt";
 
-// Find player by name (or null)
+// Find a player by name
 async function findPlayerByName(name) {
   const { data, error } = await supabase
     .from("players")
@@ -15,6 +15,25 @@ async function findPlayerByName(name) {
   }
 
   return data || null;
+}
+
+// Insert a new player (shared logic for user/guest)
+async function insertPlayer(playerData) {
+  const { data, error } = await supabase
+    .from("players")
+    .insert([playerData])
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    if (error.code === "23505") {
+      throw new Error("Player already exists");
+    }
+    console.error("Supabase error (insertPlayer):", error.message);
+    throw new Error("Failed to insert player");
+  }
+
+  return data;
 }
 
 // Get all player IDs, names, and roles
@@ -31,7 +50,7 @@ export async function getPlayerNames() {
   return data;
 }
 
-// Get all players sorted by total_solved (DESC)
+// Get all players sorted by total_solved
 export async function getPlayersSortedByTotal() {
   const { data, error } = await supabase
     .from("players")
@@ -46,7 +65,7 @@ export async function getPlayersSortedByTotal() {
   return data;
 }
 
-// Insert new solved riddle record
+// Add a solved riddle entry
 export async function insertSolvedRiddle({ player_id, riddle_id, difficulty, solved_time }) {
   const { data, error } = await supabase
     .from("solved_riddles")
@@ -61,25 +80,13 @@ export async function insertSolvedRiddle({ player_id, riddle_id, difficulty, sol
   return data[0];
 }
 
-// Create a new player with password
+// Create a new registered player
 export async function createPlayer({ name, password }) {
   const existing = await findPlayerByName(name);
-  if (existing) {
-    throw new Error("Player already exists");
-  }
+  if (existing) throw new Error("Player already exists");
 
   const passwordhash = await bcrypt.hash(password, 10);
-
-  const { data, error } = await supabase
-    .from("players")
-    .insert([{ name, passwordhash }])
-    .select()
-    .maybeSingle();
-
-  if (error) {
-    console.error("Supabase error (createPlayer):", error.message);
-    throw new Error("Failed to create player");
-  }
+  const data = await insertPlayer({ name, passwordhash });
 
   return {
     id: data.id,
@@ -88,18 +95,13 @@ export async function createPlayer({ name, password }) {
   };
 }
 
-// Login existing player by verifying password
+// Login an existing player (verify password)
 export async function loginPlayer({ name, password }) {
   const player = await findPlayerByName(name);
-
-  if (!player) {
-    throw new Error("Player not found");
-  }
+  if (!player) throw new Error("Player not found");
 
   const match = await bcrypt.compare(password, player.passwordhash);
-  if (!match) {
-    throw new Error("Incorrect password");
-  }
+  if (!match) throw new Error("Incorrect password");
 
   return {
     id: player.id,
@@ -108,3 +110,18 @@ export async function loginPlayer({ name, password }) {
   };
 }
 
+// Create or fetch a guest player
+export async function createGuestPlayer(name) {
+  try {
+    return await insertPlayer({ name, role: "guest" });
+  } catch (err) {
+    if (err.message === "Player already exists") {
+      const existing = await findPlayerByName(name);
+      if (!existing) {
+        throw new Error("Failed to fetch existing guest");
+      }
+      return existing;
+    }
+    throw err;
+  }
+}

@@ -4,7 +4,8 @@ import {
   getPlayersSortedByTotalController,
   solveRiddleController,
   createPlayerController,
-  loginPlayerController
+  loginPlayerController,
+  guestPlayerController
 } from "../controllers/playerController.js";
 import { authenticateJWT } from "../middlewares/authenticateJWT.js";
 
@@ -32,6 +33,8 @@ router.post("/solve", solveRiddleController);
 router.post("/", createPlayerController);
 
 router.post("/login", loginPlayerController);
+router.post("/guest", guestPlayerController);
+
 
 
 export default router;
