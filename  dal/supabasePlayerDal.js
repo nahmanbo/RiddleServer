@@ -1,17 +1,18 @@
 import { supabase } from "../lib/supabaseClient.js";
 
 //====================================
-// GET just player names (id + name)
+// GET all player names + roles
 //====================================
 export async function getPlayerNames() {
   const { data, error } = await supabase
     .from("players")
-    .select("id, name");
+    .select("id, name, role");
 
   if (error) {
     console.error("Supabase error (getPlayerNames):", error.message);
     throw new Error("Failed to fetch player names");
   }
+
   return data;
 }
 
@@ -28,6 +29,7 @@ export async function getPlayersSortedByTotal() {
     console.error("Supabase error (getPlayersSortedByTotal):", error.message);
     throw new Error("Failed to fetch sorted players");
   }
+
   return data;
 }
 
@@ -44,17 +46,40 @@ export async function insertSolvedRiddle({ player_id, riddle_id, difficulty, sol
     console.error("Supabase error (insertSolvedRiddle):", error.message);
     throw new Error("Failed to insert solved riddle");
   }
+
   return data[0];
 }
 
 //====================================
-// CREATE a new player
+// CREATE a new player (with role)
 //====================================
-export async function createPlayer(player) {
-  const { data, error } = await supabase.from("players").insert([player]).select();
+export async function createPlayer({ name, role = "guest" }) {
+  // check if player already exists
+  const { data: existing, error: existingError } = await supabase
+    .from("players")
+    .select("*")
+    .eq("name", name)
+    .maybeSingle();
+
+  if (existingError) {
+    console.error("Supabase error (check existence):", existingError.message);
+    throw new Error("Failed to check player existence");
+  }
+
+  if (existing) {
+    throw new Error("Player already exists");
+  }
+
+  const { data, error } = await supabase
+    .from("players")
+    .insert([{ name, role }])
+    .select()
+    .maybeSingle();
+
   if (error) {
     console.error("Supabase error (createPlayer):", error.message);
     throw new Error("Failed to create player");
   }
-  return data[0];
+
+  return data;
 }

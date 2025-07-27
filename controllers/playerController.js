@@ -3,10 +3,10 @@ import {
   getPlayersSortedByTotal,
   insertSolvedRiddle,
   createPlayer
-} from "../ dal/supabasePlayerDal.js"; 
+} from "../dal/supabasePlayerDal.js";
 
 //====================================
-// GET /players - Just player names
+// GET /players - List all player names and roles
 //====================================
 export async function getPlayerNamesController(req, res) {
   try {
@@ -18,7 +18,7 @@ export async function getPlayerNamesController(req, res) {
 }
 
 //====================================
-// GET /players/sorted-by-total
+// GET /players/sorted-by-total - Sorted player list
 //====================================
 export async function getPlayersSortedByTotalController(req, res) {
   try {
@@ -30,17 +30,11 @@ export async function getPlayersSortedByTotalController(req, res) {
 }
 
 //====================================
-// POST /players/solve
+// POST /players/solve - Save solved riddle
 //====================================
 export async function solveRiddleController(req, res) {
-  const { player_id, riddle_id, difficulty, solved_time } = req.body;
-
-  if (!player_id || !riddle_id || !difficulty || !solved_time) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
   try {
-    const result = await insertSolvedRiddle({ player_id, riddle_id, difficulty, solved_time });
+    const result = await insertSolvedRiddle(req.body);
     res.status(201).json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -48,13 +42,19 @@ export async function solveRiddleController(req, res) {
 }
 
 //====================================
-// POST /players - Create new player
+// POST /players - Create new player (with role)
 //====================================
 export async function createPlayerController(req, res) {
+  const { name, role } = req.body;
+
   try {
-    const player = await createPlayer(req.body);
-    res.status(201).json(player);
+    const newPlayer = await createPlayer({ name, role });
+    res.status(201).json(newPlayer);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (err.message === "Player already exists") {
+      res.status(409).json({ message: err.message });
+    } else {
+      res.status(500).json({ error: err.message });
+    }
   }
 }
