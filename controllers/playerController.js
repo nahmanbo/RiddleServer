@@ -3,14 +3,15 @@ import {
   getPlayersSortedByTotal,
   insertSolvedRiddle,
   createPlayer,
-  loginPlayer
+  loginPlayer,
+  createGuestPlayer
 } from "../ dal/supabasePlayerDal.js";
+
 import jwt from "jsonwebtoken";
 
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 
-//====================================
-// GET /players - List all player names and roles
-//====================================
+// Get all player names
 export async function getPlayerNamesController(req, res) {
   try {
     const players = await getPlayerNames();
@@ -20,9 +21,7 @@ export async function getPlayerNamesController(req, res) {
   }
 }
 
-//====================================
-// GET /players/sorted-by-total - Sorted player list
-//====================================
+// Get players sorted by total solved
 export async function getPlayersSortedByTotalController(req, res) {
   try {
     const players = await getPlayersSortedByTotal();
@@ -32,9 +31,7 @@ export async function getPlayersSortedByTotalController(req, res) {
   }
 }
 
-//====================================
-// POST /players/solve - Save solved riddle
-//====================================
+// Save solved riddle result
 export async function solveRiddleController(req, res) {
   try {
     const result = await insertSolvedRiddle(req.body);
@@ -43,10 +40,7 @@ export async function solveRiddleController(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
-
-//====================================
-// POST /players - Create new player 
-//====================================
+// Register a new player
 export async function createPlayerController(req, res) {
   const { name, password } = req.body;
 
@@ -55,40 +49,50 @@ export async function createPlayerController(req, res) {
   }
 
   try {
-    const newPlayer = await createPlayer({ name, password });
-    res.status(201).json(newPlayer);
+    const player = await createPlayer({ name, password });
+    res.status(201).json(player);
   } catch (err) {
-    if (err.message === "Player already exists") {
-      res.status(409).json({ message: err.message });
-    } else {
-      res.status(500).json({ error: err.message });
-    }
+    const code = err.message === "Player already exists" ? 409 : 500;
+    res.status(code).json({ error: err.message });
   }
 }
-// POST /players/login - Authenticate player and return JWT
+
+// Authenticate and return JWT
 export async function loginPlayerController(req, res) {
   const { name, password } = req.body;
 
+  if (!name || !password) {
+    return res.status(400).json({ error: "Missing name or password" });
+  }
+
   try {
     const player = await loginPlayer({ name, password });
-
-    const token = jwt.sign(
-      {
-        id: player.id,
-        name: player.name,
-        role: player.role
-      },
-      process.env.JWT_SECRET || "dev-secret",
-      { expiresIn: "1h" }
-    );
-
+    const token = generateToken(player);
     res.status(200).json({ token, player });
   } catch (err) {
-    if (err.message === "Player not found" || err.message === "Incorrect password") {
-      res.status(401).json({ error: "Invalid name or password" });
-    } else {
-      res.status(500).json({ error: "Login failed" });
-    }
+    const code = err.message.includes("password") || err.message.includes("not found") ? 401 : 500;
+    res.status(code).json({ error: "Invalid name or password" });
   }
 }
 
+// Create or reuse guest player and return JWT
+export async function guestPlayerController(req, res) {
+  const { name } = req.body;
+
+  try {
+    const player = await createGuestPlayer(name);
+    const token = generateToken(player);
+    res.status(201).json({ token, player });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create guest player" });
+  }
+}
+
+// Helper to generate JWT
+function generateToken(player) {
+  return jwt.sign(
+    { id: player.id, name: player.name, role: player.role },
+    process.env.JWT_SECRET || "dev-secret",
+    { expiresIn: "1h" }
+  );
+}

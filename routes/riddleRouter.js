@@ -7,31 +7,24 @@ import {
   deleteRiddleController,
 } from "../controllers/riddleController.js";
 
+import { authenticateJWT } from "../middlewares/authenticateJWT.js";
+import { requireRole } from "../middlewares/requireRole.js";
+
 const router = Router();
 
-// ================================
-// GET /riddles - Get all riddles
-// ================================
+// Get all riddles (public)
 router.get("/", getAllRiddlesController);
 
-// ================================
-// GET /riddles/difficulty/:difficulty - Filter riddles by difficulty
-// ================================
+// Get riddles filtered by difficulty (public)
 router.get("/difficulty/:difficulty", getRiddlesByDifficulty);
 
-// ================================
-// POST /riddles - Add new riddle
-// ================================
-router.post("/", addRiddleController);
+// Add new riddle (admin only)
+router.post("/", authenticateJWT, requireRole("admin"), addRiddleController);
 
-// ================================
-// PUT /riddles/:id - Update a riddle by ID
-// ================================
-router.put("/:id", updateRiddleController);
+// Update a riddle by ID (admin only)
+router.put("/:id", authenticateJWT, requireRole("admin"), updateRiddleController);
 
-// ================================
-// DELETE /riddles/:id - Delete a riddle by ID
-// ================================
-router.delete("/:id", deleteRiddleController);
+// Delete a riddle by ID (admin only)
+router.delete("/:id", authenticateJWT, requireRole("admin"), deleteRiddleController);
 
 export default router;
